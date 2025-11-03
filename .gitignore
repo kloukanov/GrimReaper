@@ -1,0 +1,10 @@
+/.vscode
+/Content
+/DerivedDataCache
+/Intermediate
+/Platforms
+/Saved
+/Binaries
+*.png
+/.vs
+/Images
