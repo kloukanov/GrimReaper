@@ -5,7 +5,7 @@
 #include "EnhancedInputComponent.h"
 
 APlayableCharacter::APlayableCharacter() {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -27,6 +27,35 @@ void APlayableCharacter::BeginPlay() {
 void APlayableCharacter::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
+	if(GetVelocity().IsNearlyZero()){
+		// UE_LOG(LogTemp, Warning, TEXT("velocity is zero, early return"));
+		return;
+	}
+
+	// Update car rotation based on turn rate
+    if (!FMath::IsNearlyZero(CurrentTurnRate))
+    {
+		// UE_LOG(LogTemp, Warning, TEXT("rotation input not zero"));
+        FRotator NewRotation = GetActorRotation();
+		if(MovementVector.Y <= 0 && GetActorForwardVector().Dot(GetVelocity().GetSafeNormal()) < -0.1f){
+			// UE_LOG(LogTemp, Warning, TEXT("we are NOT GOING FORWARD"));
+			NewRotation.Yaw -= CurrentTurnRate * DeltaTime;
+		}else {
+			UE_LOG(LogTemp, Warning, TEXT("we are going forward"));
+			NewRotation.Yaw += CurrentTurnRate * DeltaTime; // basically inverting the turn direction when going backwards
+		}
+
+        SetActorRotation(NewRotation);
+    }
+	
+	if(MovementVector.Y == 0.f && FMath::Abs(GetVelocity().Length()) > 0){
+		UE_LOG(LogTemp, Warning, TEXT("forward movement stoped but velocity is not zero"));
+		AddMovementInput(GetActorForwardVector(), FMath::Abs(GetVelocity().Length())/1500);
+	}
+
+	CurrentTurnRate = 0.f;
+	MovementVector.Y = 0;
+	MovementVector.X = 0;
 }
 
 void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
@@ -34,19 +63,17 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayableCharacter::Move);
+		EnhancedInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this, &APlayableCharacter::Turn);
 	}
 }
 
 void APlayableCharacter::Move(const FInputActionValue& Value) {
 
-	FVector2D MovementVector = Value.Get<FVector2D>();
+	MovementVector = Value.Get<FVector2D>();
+	AddMovementInput(GetActorForwardVector(), MovementVector.Y);
+}
 
-	const FRotator Rotation = GetController()->GetControlRotation();
-	const FRotator YawRotation(0, Rotation.Yaw, 0);
-	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-	AddMovementInput(ForwardDirection, MovementVector.Y);
-	AddMovementInput(RightDirection, MovementVector.X);
+void APlayableCharacter::Turn(const FInputActionValue& Value) {
+	CurrentTurnRate = Value.Get<FVector2D>().X * TurnRate;
 }
 

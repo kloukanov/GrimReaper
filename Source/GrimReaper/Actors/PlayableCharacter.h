@@ -18,6 +18,15 @@ class GRIMREAPER_API APlayableCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, Category ="Input")
 	class UInputAction* MoveAction;
 
+	UPROPERTY(EditAnywhere, Category ="Input")
+	class UInputAction* TurnAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Variables", meta = (AllowPrivateAccess = "true"))
+	float TurnRate;
+
+	float CurrentTurnRate;
+	
+	FVector2D MovementVector;
 
 public:
 
@@ -28,6 +37,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	void Move(const struct FInputActionValue& Value);
+
+	void Turn(const struct FInputActionValue& Value);
 
 
 public:	
