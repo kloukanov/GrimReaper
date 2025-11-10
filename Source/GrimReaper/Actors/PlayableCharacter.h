@@ -24,6 +24,9 @@ class GRIMREAPER_API APlayableCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Variables", meta = (AllowPrivateAccess = "true"))
 	float TurnRate;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Variables", meta = (AllowPrivateAccess = "true"))
+	float DecelarationRate = 1500;
+
 	float CurrentTurnRate;
 	
 	FVector2D MovementVector;

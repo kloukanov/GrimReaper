@@ -50,7 +50,7 @@ void APlayableCharacter::Tick(float DeltaTime) {
 	
 	if(MovementVector.Y == 0.f && FMath::Abs(GetVelocity().Length()) > 0){
 		UE_LOG(LogTemp, Warning, TEXT("forward movement stoped but velocity is not zero"));
-		AddMovementInput(GetActorForwardVector(), FMath::Abs(GetVelocity().Length())/1500);
+		AddMovementInput(GetActorForwardVector(), FMath::Abs(GetVelocity().Length())/DecelarationRate);
 	}
 
 	CurrentTurnRate = 0.f;
