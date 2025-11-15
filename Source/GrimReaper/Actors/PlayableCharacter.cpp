@@ -1,5 +1,6 @@
 #include "PlayableCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
@@ -21,6 +22,7 @@ APlayableCharacter::APlayableCharacter() {
 void APlayableCharacter::BeginPlay() {
 	Super::BeginPlay();
 	
+	GetCharacterMovement()->MaxWalkSpeed = Speed;
 }
 
 
