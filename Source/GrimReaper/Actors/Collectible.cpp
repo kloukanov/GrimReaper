@@ -1,6 +1,8 @@
 #include "Collectible.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GrimReaper/GRGameInstance.h"
+#include "Components/CapsuleComponent.h"
+#include "PlayableCharacter.h"
 
 ACollectible::ACollectible()
 {
@@ -22,6 +24,10 @@ void ACollectible::BeginPlay()
 		}));
 	}
 
+	if(GetCapsuleComponent()){
+		GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ACollectible::OnCapsuleComponentOverlap);
+	}
+
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
 	
 }
@@ -35,4 +41,11 @@ void ACollectible::Tick(float DeltaTime)
 void ACollectible::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void ACollectible::OnCapsuleComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	UE_LOG(LogTemp, Warning, TEXT("we collided with an actor with name %s"), *OtherActor->GetActorNameOrLabel());
+	if (APlayableCharacter* Player = Cast<APlayableCharacter>(OtherActor)) {
+        UE_LOG(LogTemp, Log, TEXT("the player interacted with this"));
+    }
 }

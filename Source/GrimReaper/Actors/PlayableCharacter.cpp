@@ -41,7 +41,7 @@ void APlayableCharacter::Tick(float DeltaTime) {
 			// UE_LOG(LogTemp, Warning, TEXT("we are NOT GOING FORWARD"));
 			NewRotation.Yaw -= CurrentTurnRate * DeltaTime;
 		}else {
-			UE_LOG(LogTemp, Warning, TEXT("we are going forward"));
+			// UE_LOG(LogTemp, Warning, TEXT("we are going forward"));
 			NewRotation.Yaw += CurrentTurnRate * DeltaTime; // basically inverting the turn direction when going backwards
 		}
 
@@ -49,7 +49,7 @@ void APlayableCharacter::Tick(float DeltaTime) {
     }
 	
 	if(MovementVector.Y == 0.f && FMath::Abs(GetVelocity().Length()) > 0){
-		UE_LOG(LogTemp, Warning, TEXT("forward movement stoped but velocity is not zero"));
+		// UE_LOG(LogTemp, Warning, TEXT("forward movement stoped but velocity is not zero"));
 		AddMovementInput(GetActorForwardVector(), FMath::Abs(GetVelocity().Length())/DecelarationRate);
 	}
 
