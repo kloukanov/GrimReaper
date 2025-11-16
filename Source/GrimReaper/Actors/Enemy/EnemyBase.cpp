@@ -39,3 +39,15 @@ void AEnemyBase::OnCapsuleComponentOverlap(UPrimitiveComponent* OverlappedCompon
     }
 }
 
+void AEnemyBase::ToggleIsDead(bool IsDead) {
+	if(IsDead) {
+		bIsDead = true;
+		SetActorHiddenInGame(true);
+		SetActorEnableCollision(false);
+	}else {
+		bIsDead = false;
+		// TODO: reset health
+		SetActorHiddenInGame(false);
+		SetActorEnableCollision(true);
+	}
+}

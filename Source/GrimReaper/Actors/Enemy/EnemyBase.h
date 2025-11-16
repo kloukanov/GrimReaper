@@ -22,7 +22,9 @@ protected:
 	float Speed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Variables", meta = (AllowPrivateAccess = "true"))
-	float FireRate;
+	float AttackRate;
+
+	bool bIsDead = false;
 
 	UFUNCTION()
     void OnCapsuleComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -33,5 +35,13 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	bool GetIsDead() const { return bIsDead; }
+
+	float GetDamageAmount() const { return Damage; }
+
+	float GetAttackRate() const { return AttackRate; }
+
+	void ToggleIsDead(bool IsDead);
 
 };
