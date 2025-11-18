@@ -9,6 +9,9 @@ class GRIMREAPER_API APlayableCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	UPROPERTY(VisibleAnywhere)
+	class UHealthComponent* HealthComponent;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 	
@@ -46,6 +49,8 @@ protected:
 
 	void Turn(const struct FInputActionValue& Value);
 
+	void HandleSteering(float DeltaTime);
+
 
 public:	
 
@@ -53,4 +58,9 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(Blueprintcallable)
+	void HandleTakeDamage();
+
+	UFUNCTION(Blueprintcallable)
+	float GetHealthPercent() const;
 };

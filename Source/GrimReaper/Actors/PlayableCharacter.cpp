@@ -4,6 +4,7 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "GrimReaper/Components/HealthComponent.h"
 
 APlayableCharacter::APlayableCharacter() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -16,6 +17,8 @@ APlayableCharacter::APlayableCharacter() {
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 }
 
 
@@ -23,12 +26,28 @@ void APlayableCharacter::BeginPlay() {
 	Super::BeginPlay();
 	
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
+
+	if(HealthComponent){
+		HealthComponent->OnActorDamaged.AddDynamic(this, &APlayableCharacter::HandleTakeDamage);
+	}
 }
 
 
 void APlayableCharacter::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+	HandleSteering(DeltaTime);
+}
 
+void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayableCharacter::Move);
+		EnhancedInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this, &APlayableCharacter::Turn);
+	}
+}
+
+void APlayableCharacter::HandleSteering(float DeltaTime) {
 	if(GetVelocity().IsNearlyZero()){
 		// UE_LOG(LogTemp, Warning, TEXT("velocity is zero, early return"));
 		return;
@@ -60,17 +79,7 @@ void APlayableCharacter::Tick(float DeltaTime) {
 	MovementVector.X = 0;
 }
 
-void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayableCharacter::Move);
-		EnhancedInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this, &APlayableCharacter::Turn);
-	}
-}
-
 void APlayableCharacter::Move(const FInputActionValue& Value) {
-
 	MovementVector = Value.Get<FVector2D>();
 	AddMovementInput(GetActorForwardVector(), MovementVector.Y);
 }
@@ -79,3 +88,12 @@ void APlayableCharacter::Turn(const FInputActionValue& Value) {
 	CurrentTurnRate = Value.Get<FVector2D>().X * TurnRate;
 }
 
+void APlayableCharacter::HandleTakeDamage() {
+	//TODO: play damaged animation
+	//TODO: grant x seconds invincibility
+	UE_LOG(LogTemp, Warning, TEXT("this actor is taking damage: %s"), *this->GetActorNameOrLabel());
+}
+
+float APlayableCharacter::GetHealthPercent() const {
+	return HealthComponent->GetHealthPercent();
+}
