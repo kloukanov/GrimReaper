@@ -16,13 +16,13 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Variables", meta = (AllowPrivateAccess = "true"))
-	float Damage;
+	float Damage = 10;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Variables", meta = (AllowPrivateAccess = "true"))
-	float Speed;
+	float Speed = 300;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Variables", meta = (AllowPrivateAccess = "true"))
-	float AttackRate;
+	float AttackRate = 5;
 
 	bool bIsDead = false;
 

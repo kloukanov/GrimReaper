@@ -18,13 +18,26 @@ private:
 
 	float Health = 0.f;
 
-public:	
-	UHealthComponent();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
+	bool HasIFramesEnabled = false; // if the actor can become temporary invincibility
+
+	bool GotHit = false; // if the actor can be hit during invincibility
+
+	FTimerHandle IFrameTimerHandle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
+	int MaxIFramesSeconds = 5;
+
+	int IFramesSecondsRemaining = 0;
+
+	void UpdateIFramesSecondsRemaining();
 
 protected:
 	virtual void BeginPlay() override;
 
 public:	
+	UHealthComponent();
+
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void TakeDamage(float DamageValue);
@@ -35,5 +48,9 @@ public:
 	void ResetHealth();
 
 	float GetHealthPercent() const { return Health / MaxHealth; }
+
+	bool GetHasIFramesEnabled() const { return HasIFramesEnabled; }
+
+	void SetHasIFramesEnabled(bool Val) { HasIFramesEnabled = Val; }
 		
 };

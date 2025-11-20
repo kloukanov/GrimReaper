@@ -1,11 +1,11 @@
 #include "EnemyBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "GrimReaper/Actors/PlayableCharacter.h"
+#include "GrimReaper/Components/HealthComponent.h"
 
 AEnemyBase::AEnemyBase()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 }
 
@@ -34,9 +34,11 @@ void AEnemyBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 void AEnemyBase::OnCapsuleComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	UE_LOG(LogTemp, Warning, TEXT("enemy collided with an actor with name %s"), *OtherActor->GetActorNameOrLabel());
-	if (APlayableCharacter* Player = Cast<APlayableCharacter>(OtherActor)) {
-        UE_LOG(LogTemp, Log, TEXT("the player interacted with this"));
-    }
+	// TODO: have to disable overlap collision with other actors
+	UHealthComponent* HC = OtherActor->FindComponentByClass<UHealthComponent>();
+	if(HC){
+		HC->TakeDamage(GetDamageAmount());
+	}
 }
 
 void AEnemyBase::ToggleIsDead(bool IsDead) {
