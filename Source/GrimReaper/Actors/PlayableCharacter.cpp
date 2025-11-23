@@ -5,6 +5,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "GrimReaper/Components/HealthComponent.h"
+#include "GrimReaper/Components/Weapon/WeaponBaseComponent.h"
 
 APlayableCharacter::APlayableCharacter() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -30,6 +31,8 @@ void APlayableCharacter::BeginPlay() {
 	if(HealthComponent){
 		HealthComponent->OnActorDamaged.AddDynamic(this, &APlayableCharacter::HandleTakeDamage);
 	}
+
+	SetUpWeapons();
 }
 
 
@@ -96,4 +99,22 @@ void APlayableCharacter::HandleTakeDamage() {
 
 float APlayableCharacter::GetHealthPercent() const {
 	return HealthComponent->GetHealthPercent();
+}
+
+void APlayableCharacter::SetUpWeapons() {
+	for(auto WeaponClass : WeaponClasses){
+		if(!WeaponClass){
+			continue;
+		}
+		
+		UWeaponBaseComponent* NewWeapon = NewObject<UWeaponBaseComponent>(this, WeaponClass);
+		
+		if(NewWeapon){
+			// TODO: change attach location but root is fine for now
+			NewWeapon->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+			NewWeapon->SetMobility(EComponentMobility::Movable);
+			NewWeapon->RegisterComponent();
+			Weapons.Add(NewWeapon);
+		}
+	}
 }

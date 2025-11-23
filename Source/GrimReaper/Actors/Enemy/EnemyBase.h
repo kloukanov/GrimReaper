@@ -9,6 +9,9 @@ class GRIMREAPER_API AEnemyBase : public ACharacter
 {
 	GENERATED_BODY()
 
+	UPROPERTY(VisibleAnywhere)
+	class UHealthComponent* HealthComponent;
+
 public:
 	AEnemyBase();
 

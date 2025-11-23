@@ -37,6 +37,12 @@ class GRIMREAPER_API APlayableCharacter : public ACharacter
 	
 	FVector2D MovementVector;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Variables", meta = (AllowPrivateAccess = "true"))
+	TArray<TSubclassOf<class UWeaponBaseComponent>> WeaponClasses;
+
+	UPROPERTY()
+	TArray<class UWeaponBaseComponent*> Weapons;
+
 public:
 
 	APlayableCharacter();
@@ -51,6 +57,7 @@ protected:
 
 	void HandleSteering(float DeltaTime);
 
+	void SetUpWeapons();
 
 public:	
 

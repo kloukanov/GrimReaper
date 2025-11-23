@@ -30,6 +30,7 @@ private:
 
 	int IFramesSecondsRemaining = 0;
 
+	UFUNCTION()
 	void UpdateIFramesSecondsRemaining();
 
 protected:
