@@ -17,6 +17,10 @@ void AEnemyBase::BeginPlay()
 		GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBase::OnCapsuleComponentOverlap);
 	}
 
+	if(HealthComponent){
+		HealthComponent->OnActorDamaged.AddDynamic(this, &AEnemyBase::HandleTakeDamage);
+	}
+
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
 }
 
@@ -33,7 +37,9 @@ void AEnemyBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 }
 
 void AEnemyBase::OnCapsuleComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
-	UE_LOG(LogTemp, Warning, TEXT("enemy collided with an actor with name %s"), *OtherActor->GetActorNameOrLabel());
+	// UE_LOG(LogTemp, Warning, TEXT("enemy collided with a component with name %s"), *OtherComp->GetName());
+	if (OtherComp && OtherComp->ComponentHasTag("WeaponDetection"))
+		return;
 	// TODO: have to disable overlap collision with other actors
 	UHealthComponent* HC = OtherActor->FindComponentByClass<UHealthComponent>();
 	if(HC){
@@ -46,10 +52,20 @@ void AEnemyBase::ToggleIsDead(bool IsDead) {
 		bIsDead = true;
 		SetActorHiddenInGame(true);
 		SetActorEnableCollision(false);
+		// TODO: enable the AI controller
 	}else {
 		bIsDead = false;
-		// TODO: reset health
+		HealthComponent->ResetHealth();
 		SetActorHiddenInGame(false);
 		SetActorEnableCollision(true);
+		// TODO: disable the AI controller
+	}
+}
+
+void AEnemyBase::HandleTakeDamage() {
+	//TODO: play damaged animation
+	UE_LOG(LogTemp, Warning, TEXT("this actor is taking damage: %s"), *this->GetActorNameOrLabel());
+	if(HealthComponent->GetHealthPercent() <= 0){
+		ToggleIsDead(true);
 	}
 }

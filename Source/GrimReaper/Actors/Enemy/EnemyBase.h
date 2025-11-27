@@ -47,4 +47,6 @@ public:
 
 	void ToggleIsDead(bool IsDead);
 
+	UFUNCTION(Blueprintcallable)
+	void HandleTakeDamage();
 };

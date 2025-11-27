@@ -94,7 +94,7 @@ void APlayableCharacter::Turn(const FInputActionValue& Value) {
 void APlayableCharacter::HandleTakeDamage() {
 	//TODO: play damaged animation
 	//TODO: grant x seconds invincibility
-	UE_LOG(LogTemp, Warning, TEXT("this actor is taking damage: %s"), *this->GetActorNameOrLabel());
+	UE_LOG(LogTemp, Warning, TEXT("PLAYER IS BEING DAMAGED"));
 }
 
 float APlayableCharacter::GetHealthPercent() const {

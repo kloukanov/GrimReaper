@@ -29,7 +29,7 @@ void UHealthComponent::TakeDamage(float DamageValue) {
 
 	if(GetHasIFramesEnabled() && GotHit){
 		// don't take damage
-		UE_LOG(LogTemp, Warning, TEXT("invincibleeeeeeee"));
+		// UE_LOG(LogTemp, Warning, TEXT("invincibleeeeeeee"));
 		return;
 	}
 
@@ -39,7 +39,7 @@ void UHealthComponent::TakeDamage(float DamageValue) {
 
 	// TODO: tell our gamemode or manager that actor died for stat keeping and object pooling
 
-	UE_LOG(LogTemp, Warning, TEXT("health = %f"), Health);
+	UE_LOG(LogTemp, Warning, TEXT("%s's health = %f"), *GetOwner()->GetActorNameOrLabel(), Health);
 }
 
 void UHealthComponent::ResetHealth() {
@@ -47,11 +47,11 @@ void UHealthComponent::ResetHealth() {
 }
 
 void UHealthComponent::UpdateIFramesSecondsRemaining() {
-	UE_LOG(LogTemp, Warning, TEXT("GotHit = %s"), GotHit == true ? *FString("true") : *FString("false"));
-	UE_LOG(LogTemp, Warning, TEXT("IFramesSecondsRemaining = %d"), IFramesSecondsRemaining);
+	// UE_LOG(LogTemp, Warning, TEXT("GotHit = %s"), GotHit == true ? *FString("true") : *FString("false"));
+	// UE_LOG(LogTemp, Warning, TEXT("IFramesSecondsRemaining = %d"), IFramesSecondsRemaining);
 
 	if(IFramesSecondsRemaining <= 0){
-		UE_LOG(LogTemp, Warning, TEXT("reset iframes and gothit"));
+		// UE_LOG(LogTemp, Warning, TEXT("reset iframes and gothit"));
 		IFramesSecondsRemaining = MaxIFramesSeconds;
 		GotHit = false;
 	}

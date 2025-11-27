@@ -31,6 +31,9 @@ private:
 
 	TArray<AActor*> NearbyTargets;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Variables", meta = (AllowPrivateAccess = "true"))
+	bool ShouldFire = true;
+
 public:	
 
 	UWeaponBaseComponent();
