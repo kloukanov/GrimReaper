@@ -6,6 +6,8 @@
 #include "EnhancedInputComponent.h"
 #include "GrimReaper/Components/HealthComponent.h"
 #include "GrimReaper/Components/Weapon/WeaponBaseComponent.h"
+#include "GrimReaper/Actors/GRPlayerState.h"
+#include "GrimReaper/CollectibleType.h"
 
 APlayableCharacter::APlayableCharacter() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -27,6 +29,8 @@ void APlayableCharacter::BeginPlay() {
 	Super::BeginPlay();
 	
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
+
+	PlayerState = GetPlayerState<AGRPlayerState>();
 
 	if(HealthComponent){
 		HealthComponent->OnActorDamaged.AddDynamic(this, &APlayableCharacter::HandleTakeDamage);
@@ -116,5 +120,13 @@ void APlayableCharacter::SetUpWeapons() {
 			NewWeapon->RegisterComponent();
 			Weapons.Add(NewWeapon);
 		}
+	}
+}
+
+void APlayableCharacter::CollectSoul(ECollectibleType Type, const int Value){
+	if(PlayerState){
+		PlayerState->ModifySouls(Type, Value);
+	}else{
+		UE_LOG(LogTemp, Log, TEXT("no player state"));
 	}
 }

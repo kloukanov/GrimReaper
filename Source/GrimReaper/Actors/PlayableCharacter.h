@@ -59,6 +59,8 @@ protected:
 
 	void SetUpWeapons();
 
+	class AGRPlayerState* PlayerState;
+
 public:	
 
 	virtual void Tick(float DeltaTime) override;
@@ -70,4 +72,7 @@ public:
 
 	UFUNCTION(Blueprintcallable)
 	float GetHealthPercent() const;
+
+	UFUNCTION(Blueprintcallable)
+	void CollectSoul(ECollectibleType Type, const int Value);
 };

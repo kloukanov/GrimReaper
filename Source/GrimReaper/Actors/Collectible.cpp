@@ -47,5 +47,8 @@ void ACollectible::OnCapsuleComponentOverlap(UPrimitiveComponent* OverlappedComp
 	UE_LOG(LogTemp, Warning, TEXT("we collided with an actor with name %s"), *OtherActor->GetActorNameOrLabel());
 	if (APlayableCharacter* Player = Cast<APlayableCharacter>(OtherActor)) {
         UE_LOG(LogTemp, Log, TEXT("the player interacted with this"));
+		// TODO: broadcast this instead of going directly to player and pass the ECollectibleType Type
+		Player->CollectSoul(Type, 1);
+		Destroy();
     }
 }
